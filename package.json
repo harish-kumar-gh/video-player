@@ -1,0 +1,17 @@
+{
+  "name": "01_video_player",
+  "version": "1.0.0",
+  "description": "a backend for a video player project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "javascript",
+    "mongodb",
+    "mongoose",
+    "express"
+  ],
+  "author": "Harish Kumar",
+  "license": "ISC"
+}
