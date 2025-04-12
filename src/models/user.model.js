@@ -54,7 +54,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function (next) {
   // this will allow us so that only when creating and updating the password will the encrpytion will run
   // and not when we are doing other things such as updating username
-  if (!this.modified("password")) return next();
+  if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 10);
 
