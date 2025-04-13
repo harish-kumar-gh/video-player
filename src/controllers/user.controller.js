@@ -256,7 +256,7 @@ const getCurrentUser = asyncHandler( async( req, res) => {
 
     return res
     .status(200)
-    .json(200, req.user, "current user fetched successfully");
+    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
 })
 
 
@@ -268,7 +268,7 @@ const updateAccountDetails = asyncHandler( async(req, res) => {
         throw new ApiError(400, "All fields are required")
     }
 
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
@@ -285,7 +285,9 @@ const updateAccountDetails = asyncHandler( async(req, res) => {
 })
 
 const updateUserAvatar = asyncHandler( async(req, res) => {
-  const avatarLocalPath = req.file?.path;
+//   TODO: Delete the old avatar
+  
+    const avatarLocalPath = req.file?.path;
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is missing");
@@ -297,7 +299,7 @@ const updateUserAvatar = asyncHandler( async(req, res) => {
     throw new ApiError(400, "Error while uploading the avatar");
   }
 
-  const user = User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       avatar: avatar.url,
@@ -314,33 +316,31 @@ const updateUserAvatar = asyncHandler( async(req, res) => {
 })
 
 const updateUserCoverImage = asyncHandler( async(req, res) => {
+  //   TODO: Delete the old cover Image
 
-    const coverImageLocalPath = req.file?.path;
+  const coverImageLocalPath = req.file?.path;
 
-    if (!coverImageLocalPath) {
-      throw new ApiError(400, "Cover Image file is missing");
-    }
+  if (!coverImageLocalPath) {
+    throw new ApiError(400, "Cover Image file is missing");
+  }
 
-    const newCoverImage = await uploadOnCloudinary(coverImageLocalPath);
+  const newCoverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-    if(!coverImage.url){
-        throw new ApiError(400, "Error while uploading the cover Image")
-    }
+  if (!coverImage.url) {
+    throw new ApiError(400, "Error while uploading the cover Image");
+  }
 
-    const user = User.findByIdAndUpdate(
-        req.user?._id,
-        {
-            coverImage: newCoverImage.url
-        },
-        {new: true}
-    ).select("-password");
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      coverImage: newCoverImage.url,
+    },
+    { new: true }
+  ).select("-password");
 
-    return res
+  return res
     .status(200)
-    .json(
-        new ApiResponse(200, user, "Cover Image updated successfully")
-    )
-
+    .json(new ApiResponse(200, user, "Cover Image updated successfully"));
 })
 
 export {
